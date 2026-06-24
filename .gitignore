@@ -1,0 +1,6 @@
+# Local tooling / OS cruft — not part of the site
+.claude/
+.DS_Store
+
+# macOS sandbox atomic-write temp files
+*.sb-*

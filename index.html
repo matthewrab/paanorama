@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <title>PAAnorama — A backstage pass to who's who across government</title>
+  <meta name="description" content="PAAnorama — everything, everyone, one search. GEDS plus institutional memory.">
+  <style>
+    :root {
+      --bg: #0a0e16;
+      --glow: #15233b;
+      --ink: #f4f7fb;
+      --muted: #8a94a6;
+      --muted-2: #5b6678;
+      --accent: #4d8df0;
+      --accent-soft: #c9d3e0;
+      --card: rgba(255, 255, 255, 0.03);
+      --card-strong: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --green: #3ddc84;
+      --amber: #f5a623;
+      --lib: #d71920;
+      --con: #1a4782;
+      --con-bright: #2e6fd1;
+      --ndp: #f37021;
+      --radius: 16px;
+      --maxw: 1080px;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Radial-glow backdrop, fixed behind everything */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(120% 80% at 50% -10%, var(--glow) 0%, rgba(21,35,59,0.35) 35%, var(--bg) 70%),
+        var(--bg);
+    }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+    /* ---------- Wordmark ---------- */
+    .wordmark {
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .wordmark .paa { color: var(--accent-soft); }
+    .wordmark .norama { color: var(--accent); }
+
+    /* ---------- Eyebrow pill ---------- */
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 14px;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      text-align: center;
+      padding: clamp(90px, 16vh, 170px) 0 clamp(60px, 9vh, 100px);
+    }
+    .hero .wordmark {
+      font-size: clamp(44px, 9vw, 92px);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(26px, 4.6vw, 50px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.08;
+      max-width: 14ch;
+      margin: 0 auto 22px;
+    }
+    .hero .sub {
+      font-size: clamp(15px, 2.2vw, 19px);
+      color: var(--muted);
+      max-width: 44ch;
+      margin: 0 auto 36px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent-soft);
+      background: var(--card-strong);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 9px 18px;
+    }
+    .status-pill .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 0 rgba(61,220,132,0.55);
+      animation: pulse 2.4s infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(61,220,132,0.5); }
+      70%  { box-shadow: 0 0 0 9px rgba(61,220,132,0); }
+      100% { box-shadow: 0 0 0 0 rgba(61,220,132,0); }
+    }
+
+    .hero-video {
+      margin: clamp(40px, 6vw, 64px) auto 0;
+      max-width: 520px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 30px 80px -30px rgba(0,0,0,0.8);
+      background: #000;
+    }
+    .hero-video video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ---------- Section heading ---------- */
+    .section-head {
+      text-align: center;
+      max-width: 50ch;
+      margin: 0 auto clamp(36px, 6vw, 56px);
+    }
+    .section-head h2 {
+      font-size: clamp(24px, 3.6vw, 36px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 16px 0 12px;
+    }
+    .section-head p { color: var(--muted); font-size: clamp(15px, 2vw, 17px); }
+
+    section { padding: clamp(40px, 7vw, 70px) 0; }
+
+    /* ---------- Feature grid ---------- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      background: var(--card-strong);
+    }
+    .card .num {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .card h3 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
+    }
+    .card p { color: var(--muted); font-size: 14.5px; }
+
+    /* ---------- Developer ---------- */
+    .dev {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: clamp(28px, 5vw, 56px);
+      align-items: center;
+      max-width: 880px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: clamp(24px, 4vw, 40px);
+    }
+    .dev img {
+      width: 100%;
+      aspect-ratio: 1031 / 1373;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid var(--border-strong);
+      display: block;
+    }
+    .dev .eyebrow { margin-bottom: 16px; }
+    .dev h3 {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .dev p { color: var(--muted); font-size: 15.5px; line-height: 1.65; }
+    @media (max-width: 640px) {
+      .dev { grid-template-columns: 1fr; text-align: center; }
+      .dev img { max-width: 240px; margin: 0 auto; }
+    }
+
+    /* ---------- Closing band ---------- */
+    .closing {
+      text-align: center;
+      padding: clamp(80px, 13vw, 140px) 0 60px;
+    }
+    .closing h2 {
+      font-size: clamp(24px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 26px;
+      max-width: 16ch;
+      margin-left: auto; margin-right: auto;
+    }
+    .closing .wordmark { font-size: clamp(38px, 8vw, 72px); }
+
+    footer {
+      text-align: center;
+      padding: 40px 0 56px;
+      color: var(--muted-2);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    /* ---------- Scroll reveal (progressive enhancement) ---------- */
+    .reveal { opacity: 1; transform: none; }
+    .js .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .js .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .js .reveal { opacity: 1; transform: none; transition: none; }
+      .status-pill .dot { animation: none; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="wordmark"><span class="paa">PAA</span><span class="norama">norama</span></div>
+      <h1>Everything. Everyone. One&nbsp;search.</h1>
+      <p class="sub">A backstage pass to who's who across government. A solo project by Matthew Larventz.</p>
+      <span class="status-pill"><span class="dot"></span>Early access · 2026 · Coming soon</span>
+      <div class="hero-video">
+        <video autoplay muted loop playsinline controls preload="metadata">
+          <source src="Preview Video.mp4" type="video/mp4">
+          <source src="Preview Video.mov" type="video/quicktime">
+        </video>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== FEATURES ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">The platform</span>
+        <h2>One window onto the entire government landscape.</h2>
+        <p>From the federal cabinet to municipal staff — searchable, sourced, and current.</p>
+      </div>
+
+      <div class="grid">
+
+        <!-- Directory -->
+        <article class="card reveal">
+          <div class="num">01 · Directory</div>
+          <h3>Find anyone across government.</h3>
+          <p>Officials, politicians, and staff — federal to municipal.</p>
+        </article>
+
+        <!-- The Dossier -->
+        <article class="card reveal">
+          <div class="num">02 · The Dossier</div>
+          <h3>One person. Full history.</h3>
+          <p>The official record, plus everything your team knows.</p>
+        </article>
+
+        <!-- Follow the Money -->
+        <article class="card reveal">
+          <div class="num">03 · Follow the Money</div>
+          <h3>Who funds whom.</h3>
+          <p>Every contribution — ten jurisdictions deep.</p>
+        </article>
+
+        <!-- LobbyView -->
+        <article class="card reveal">
+          <div class="num">04 · National LobbyView</div>
+          <h3>Who's lobbying whom.</h3>
+          <p>Who's in the room, and on whose behalf.</p>
+        </article>
+
+        <!-- Bill Tracker -->
+        <article class="card reveal">
+          <div class="num">05 · Bill Tracker</div>
+          <h3>Track every bill.</h3>
+          <p>Sponsor, stage, and how each party voted.</p>
+        </article>
+
+        <!-- News -->
+        <article class="card reveal">
+          <div class="num">06 · News</div>
+          <h3>Every outlet, one feed.</h3>
+          <p>67 sources · linked to the people they name.</p>
+        </article>
+
+        <!-- Consultations -->
+        <article class="card reveal">
+          <div class="num">07 · Consultations</div>
+          <h3>Never miss a deadline.</h3>
+          <p>Every open consultation · federal + provincial.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DEVELOPER ===================== -->
+  <section>
+    <div class="wrap">
+      <article class="dev reveal">
+        <img src="developer.jpg" alt="Matthew Garrett Larventz" loading="lazy">
+        <div>
+          <span class="eyebrow">Our Developer</span>
+          <h3>Matthew Garrett Larventz</h3>
+          <p>Matthew Garrett Larventz is a seasoned government relations professional, amateur vibe-coder, and former school board trustee. In addition to PAAnorama, Matthew has built a room booking software, and an unsuccessful beverage tracking application. He is building this new application completely alone, with no help from anyone else, and he deserves to reap all the financial benefits.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== CLOSING ===================== -->
+  <section class="closing reveal">
+    <div class="wrap">
+      <h2>Everything. Everyone. One&nbsp;search.</h2>
+      <div class="wordmark"><span class="paa">PAA</span><span class="norama">norama</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">© 2026 Matthew Larventz · Early access coming 2026</div>
+  </footer>
+
+  <script>
+    // Progressive enhancement: flag JS so reveal animations only apply when JS runs.
+    document.documentElement.classList.add('js');
+    document.body.classList.add('js');
+
+    (function () {
+      var els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('in'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      els.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+
+</body>
+</html>
